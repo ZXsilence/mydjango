@@ -8,6 +8,7 @@ $(function(){
 
 
 	$('#user_name').blur(function() {
+
 		check_user_name();
 	});
 
@@ -39,17 +40,31 @@ $(function(){
 
 
 	function check_user_name(){
+		var sName = $('#user_name').val();
 		var len = $('#user_name').val().length;
 		if(len<5||len>20)
 		{
-			$('#user_name').next().html('请输入5-20个字符的用户名')
+			$('#user_name').next().html('请输入5-20个字符的用户名');
 			$('#user_name').next().show();
 			error_name = true;
 		}
 		else
 		{
-			$('#user_name').next().hide();
-			error_name = false;
+			$.post('/user/check_username/',{'csrfmiddlewaretoken': $('input:first').val()}, function (data) {
+
+					for(var i=0;i < data['name_list'].length; i++)
+					{
+						if(sName == data['name_list'][i])
+						{
+							$('#user_name').next().html('重名啦').show();
+							error_name = true;
+							return;
+						}
+
+					}
+					$('#user_name').next().hide();
+					error_name = false;
+            })
 		}
 	}
 
@@ -105,7 +120,7 @@ $(function(){
 	}
 
 
-	$('#reg_form').submit(function() {
+	$('.reg_form').submit(function() {
 		check_user_name();
 		check_pwd();
 		check_cpwd();
@@ -113,10 +128,12 @@ $(function(){
 
 		if(error_name == false && error_password == false && error_check_password == false && error_email == false && error_check == false)
 		{
+			$('.reg_form form').prop({action:'/user/user_info/'});
 			return true;
 		}
 		else
 		{
+			$('.reg_form form').prop({action:'#'});
 			return false;
 		}
 
