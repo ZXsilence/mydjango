@@ -2,9 +2,31 @@
 
 from django.shortcuts import render,redirect
 from django.http import HttpResponse,JsonResponse
-# Create your views here.
+from django.conf import settings
+from django.core.mail import send_mail
 from models import *
 from hashlib import sha1
+from . import task
+
+# def send(request):
+#     # msg = '''
+#     # <h1> hello world </h1>
+#     #
+#     # <a href="http://www.itcast.cn/subject/pythonzly/index.shtml" target="_blank">点击激活</a>
+#     #
+#     # '''
+#     #
+#     # # msg = 'hello world'
+#     # status =send_mail('账号激活','hello world',settings.EMAIL_FROM, ['451694791@qq.com'],html_message=msg)
+#     #
+#     # if status:
+#     #     return HttpResponse('ok')
+#     # else:
+#     #     return HttpResponse('fail')
+#     email = '906312371@qq.com'
+#     task.send.delay(email)
+#
+#     return HttpResponse('ok')
 
 
 
@@ -26,6 +48,9 @@ def user_register(request):
 
 
 def user_info(request):
+
+
+
     dict = request.POST
 
     info = UserInfo()
@@ -38,6 +63,7 @@ def user_info(request):
 
     info.save()
 
+    task.send.delay(info.uemail)
 
     return redirect('/user/login/')
 

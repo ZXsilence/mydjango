@@ -324,6 +324,8 @@ html,body{height:100%}
 .r_con{width:400px;}
 .reg_title{width:360px;height:50px;float:left;margin-left:30px;border-bottom:1px solid #e0e0e0}
 .reg_title h1{height:50px;line-height:50px;float:left;font-size:24px;color:#a8a8a8;font-weight:bold;}
+.reg_title span{margin: 0px 15px;line-height: 50px;}
+.reg_title .reg_email{margin-left: 40px}
 .reg_title a{float:right;height:20px;line-height:20px;font-size:16px;color:#5fb42a;padding-right:20px;background:url(../images/icons02.png) 35px 3px no-repeat;margin-top:15px}
 
 .reg_form{width:360px;margin:30px 0 0 30px;float:left;position:relative;}

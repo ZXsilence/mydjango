@@ -13,5 +13,5 @@ urlpatterns = [
     url(r'^register/$', user_register),
     url(r'^user_info/$', user_info),
     url(r'^check_username/$', check_username),
-
+    # url(r'^send/$', send)
 ]

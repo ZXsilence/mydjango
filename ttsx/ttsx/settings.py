@@ -1,3 +1,5 @@
+#coding=utf-8
+
 """
 Django settings for ttsx project.
 
@@ -37,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'djcelery',
     'tt_user',
 )
 
@@ -109,3 +112,22 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+
+# send email
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.qq.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = '451694791@qq.com'
+EMAIL_USE_TLS = True
+EMAIL_HOST_PASSWORD = 'dnizrbagewiobhfe'
+# EMAIL_FROM = 'ttsx<451694791@qq.com>'
+EMAIL_FROM = '天天生鲜服务团<451694791@qq.com>'
+
+
+# celery configuration
+import djcelery
+djcelery.setup_loader()
+BROKER_URL = 'redis://127.0.0.1:6379/2'
+CELERY_IMPORTS = ('tt_user.task')
