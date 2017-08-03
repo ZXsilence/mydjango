@@ -4,6 +4,8 @@ $(function () {
     var $user = $('.name_input');
     var $pwd = $('.pass_input');
 
+
+
     $user.blur(function () {
         if($(this).val()=='')
         {
@@ -58,22 +60,4 @@ $(function () {
             $('form').prop({'action':"/user/login_submit/"});
         }
     })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 });

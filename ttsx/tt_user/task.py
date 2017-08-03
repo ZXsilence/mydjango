@@ -15,7 +15,7 @@ def send(email):
     '''
 
     # msg = 'hello world'
-    status =send_mail('账号激活','hello world',settings.EMAIL_FROM, [email],html_message=msg)
+    status =send_mail('账号激活','',settings.EMAIL_FROM, [email],html_message=msg)
     if status:
         print 'ok'
     else:

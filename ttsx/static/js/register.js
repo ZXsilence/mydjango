@@ -50,6 +50,7 @@ $(function(){
 		}
 		else
 		{
+
 			$.post('/user/check_username/',{'csrfmiddlewaretoken': $('input:first').val()}, function (data) {
 
 					for(var i=0;i < data['name_list'].length; i++)
