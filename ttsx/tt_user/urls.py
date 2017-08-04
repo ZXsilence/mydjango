@@ -18,7 +18,10 @@ urlpatterns = [
     url(r'^center_info/$', center_info),
     url(r'^center_order/$', center_order),
     url(r'^center_site/$', center_site),
-    url(r'^phone/$', phone),
-    url(r'^check/$', check),
+    # url(r'^phone/$', phone),
+    # url(r'^check/$', check),
+    url(r'logout/$', logout),
+    url(r'center_site_info/$', center_site_info)
+
 
 ]

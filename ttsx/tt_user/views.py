@@ -1,6 +1,6 @@
 #coding=utf-8
 
-from django.shortcuts import render,redirect
+from django.shortcuts import *
 from django.http import HttpResponse,JsonResponse
 
 from models import *
@@ -12,6 +12,7 @@ import urllib2
 import time
 
 import time
+from user_decorators import *
 from datetime import date, datetime
 import httplib
 
@@ -50,7 +51,7 @@ def phone(request):
     print app_key+nonce+cur_time
     checksum = sha1(app_secret+nonce+cur_time).hexdigest()
     print checksum
-    mobile = '18729242900'
+    mobile = '18610864225'
 
     templateid = 3059844
 
@@ -95,7 +96,7 @@ def check(request):
     print app_key + nonce + cur_time
     checksum = sha1(app_secret + nonce + cur_time).hexdigest()
     print checksum
-    mobile = '18729242900'
+    mobile = '18610864225'
 
     templateid = 3059844
 
@@ -107,7 +108,7 @@ def check(request):
 
     # data['templateid'] = templateid
     data['mobile'] = mobile
-    data['code'] = 6991
+    data['code'] = 7313
 
     data = urllib.urlencode(data)
     req = urllib2.Request(url, data)
@@ -124,9 +125,17 @@ def check(request):
 
 
 def user_login(request):
-    context = {'title': '登陆'}
+    context = {}
+    context['head'] = '1'
+    if request.COOKIES.has_key('name'):
+        context['name'] = request.COOKIES["name"]
+    context['title'] = '登陆'
     return render(request, 'tt_user/login.html', context)
 
+
+def logout(request):
+    request.session.flush()
+    return redirect('/user/login/')
 
 
 def index(request):
@@ -135,6 +144,7 @@ def index(request):
 
 def user_register(request):
     context = {'title': '注册'}
+    context['head'] = '1'
     return render(request, 'tt_user/register.html', context)
 
 
@@ -171,6 +181,8 @@ def check_username(request):
 def login_submit(request):
     dict = request.POST
 
+    print dict.get('check', '0')
+
     name = dict.get('username')
 
     pwd = dict.get('pwd')
@@ -185,21 +197,79 @@ def login_submit(request):
         name_list.append(temp.uname)
         pwd_list.append(temp.upwd)
     if name in name_list and pwd_sha1 in pwd_list:
-        # path = request.session.get('url_path')
-        print request.session
-        # response.set_cookie('name', name)
-        request.session['uname'] = name
-        request.session.set_expiry(60*60*1)
+        path = request.session.get('url_path', '/user/center_info/')
 
-        return render(request, 'tt_user/user_center_info.html', )
+        # response.set_cookie('name', name)
+        request.session['name'] = name
+        # u = UserInfo.objects.filter(uname=name)
+        # request.session['id'] = u[0].id
+
+
+
+        request.session.set_expiry(60*60)
+
+
+        response = redirect(path)
+        if (dict.get('check', '0') == '1'):
+            response.set_cookie('name', name, max_age=60*60*2)
+        else:
+            response.set_cookie('name', name, max_age=0)
+
+        return response
     else:
         context = {}
         context['name'] = name
         context['title'] = '登陆'
+        context['head'] = '1'
         # context['pwd'] = pwd
         context['error'] = 1
 
         return render(request, 'tt_user/login.html', context)
+
+
+
+
+
+@user
+def center_info(request):
+    context = {'title': '用户中心'}
+
+    return render(request, 'tt_user/user_center_info.html', context )
+
+@user
+def center_order(request):
+    context = {'title': '用户订单'}
+
+    return render(request, 'tt_user/user_center_order.html', context)
+
+
+@user
+def center_site(request):
+    context = {'title': '用户地址'}
+    return render(request, 'tt_user/user_center_site.html', context)
+
+
+@user
+def center_site_info(request):
+    dict = request.POST
+    reciever = dict['reciever']
+    addr = dict['addr']
+    phone = dict['phone']
+
+    useraddr = UserAddr()
+
+    useraddr.addr = addr
+    useraddr.reciever = reciever
+    useraddr.phone = phone
+    useraddr.uname = UserInfo.objects.filter(uname= request.session['name'])[0]
+    useraddr.save()
+
+    context = {'reciever': reciever, 'addr':addr, 'phone':phone}
+    return render(request,'tt_user/user_center_site.html', context)
+
+
+
+
 
 
 
@@ -248,17 +318,3 @@ def verify_code(request):
 
     # return HttpResponse(content= buf.getvalue(), content_type='image/png')
     return render(request, context = buf.getvalue(), content_type='image/png')
-
-
-
-def center_info(request):
-
-
-    return render(request, 'tt_user/user_center_info.html', )
-
-
-def center_order(request):
-    return render(request, 'tt_user/user_center_order.html')
-
-def center_site(request):
-    return render(request, 'tt_user/user_center_site.html')
