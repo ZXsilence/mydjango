@@ -11,6 +11,8 @@ import urllib
 import urllib2
 import time
 
+from tt_goods.models import *
+
 import time
 from user_decorators import *
 from datetime import date, datetime
@@ -130,7 +132,7 @@ def user_login(request):
     if request.COOKIES.has_key('name'):
         context['name'] = request.COOKIES["name"]
     context['title'] = '登陆'
-    return render(request, 'tt_user/login.html', context)
+    return render(request, 'tt_user/login.html', locals())
 
 
 def logout(request):
@@ -232,7 +234,20 @@ def login_submit(request):
 
 @user
 def center_info(request):
-    context = {'title': '用户中心'}
+    goods_ids =  request.COOKIES.get('goods_ids', '')
+
+    temp = goods_ids.split(',')
+    print temp
+
+    recent_list = []
+
+    for i in temp:
+        if i:
+            goods = GoodsInfo.objects.get(id = i)
+            recent_list.append(goods)
+
+
+    context = {'title': '用户中心', 'recent_list': recent_list}
 
     return render(request, 'tt_user/user_center_info.html', context )
 
