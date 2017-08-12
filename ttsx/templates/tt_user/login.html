@@ -8,8 +8,8 @@
     <script>
     $(function () {
         var $user = $('.name_input');
-
-        if( {{ error }} == '1')
+        var error = {{ error }}
+        if( error == '1')
         {
             $user.next().html('用户名或密码有误').show();
         }

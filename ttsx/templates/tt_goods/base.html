@@ -21,7 +21,15 @@
             $.get('/cart/count/',function (data) {
                 if(data.isok)
                 {
-                   $('#show_count').text(data.count);
+                    if(data.count == null)
+                   {
+
+                   }
+                   else
+                   {
+                    $('#show_count').text(data.count);
+                   }
+
                 }
             })
         </script>

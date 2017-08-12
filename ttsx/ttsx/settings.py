@@ -46,6 +46,8 @@ INSTALLED_APPS = (
     'tt_user',
     'tt_goods',
     'tt_cart',
+    'tt_order',
+    'tt_common',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -158,3 +160,4 @@ HAYSTACK_CONNECTIONS = {
 }
 
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+HAYSTACK_SEARCH_RESULTS_PER_PAGE=6

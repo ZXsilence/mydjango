@@ -1,24 +1,103 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>全文检索--结果页</title>
-</head>
-<body>
-<h1>搜索&nbsp;<b>{{query}}</b>&nbsp;结果如下：</h1>
-<ul>
-{%for item in page%}
-    <li>{{item.object.id}}--{{item.object.gcontent|safe}}</li>
-{%empty%}
-    <li>啥也没找到</li>
-{%endfor%}
-</ul>
-<hr>
-{%for pindex in page.paginator.page_range%}
-    {%if pindex == page.number%}
-        {{pindex}}&nbsp;&nbsp;
-    {%else%}
-        <a href="?q={{query}}&amp;page={{pindex}}">{{pindex}}</a>&nbsp;&nbsp;
-    {%endif%}
-{%endfor%}
-</body>
-</html>
+{% extends 'tt_goods/base.html' %}
+
+{% block script %}
+    <script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+    <script>
+
+        function add_cart(gid) {
+            $.get('/cart/add/', {'gid':gid, 'count':1}, function (data) {
+                if(data.isok == 1)
+                {
+                    alert('成功加入购物车')
+                    $.get('/cart/count/',function (data) {
+                        if(data.isok)
+                        {
+                           $('#show_count').text(data.count);
+                        }
+                    })
+                }
+                else
+                {
+                    location.href= '/user/login/';
+                }
+            })
+        }
+
+    </script>
+ {% endblock %}
+
+
+{% block content %}
+	<div class="navbar_con">
+		<div class="navbar clearfix">
+			<div class="subnav_con fl">
+				<h1>全部商品分类</h1>
+				<span></span>
+				<ul class="subnav">
+					<li><a href="/list1_1_1/" class="fruit">新鲜水果</a></li>
+					<li><a href="/list2_1_1/" class="seafood">海鲜水产</a></li>
+					<li><a href="/list3_1_1/" class="meet">猪牛羊肉</a></li>
+					<li><a href="/list4_1_1/" class="egg">禽类蛋品</a></li>
+					<li><a href="/list5_1_1/" class="vegetables">新鲜蔬菜</a></li>
+					<li><a href="/list6_1_1/" class="ice">速冻食品</a></li>
+				</ul>
+			</div>
+			<ul class="navlist fl">
+				<li><a href="/">首页</a></li>
+				<li class="interval">|</li>
+				<li><a href="/">手机生鲜</a></li>
+				<li class="interval">|</li>
+				<li><a href="/">抽奖</a></li>
+			</ul>
+		</div>
+	</div>
+
+
+
+    	<div class="main_wrap clearfix">
+
+
+		<div class="r_wrap fr clearfix">
+
+			<ul class="goods_type_list clearfix">
+
+                {% for item in page %}
+                <li>
+					<a href="/detail_{{ item.object.id }}/"><img src="/static/images/{{ item.object.gpic }}"></a>
+					<h4><a href="/detail_{{ item.object.id }}/">{{ item.object.gtitle | truncatechars:15 }}</a></h4>
+					<div class="operate">
+						<span class="prize">￥{{ item.object.gprice }}</span>
+						<span class="unit">/ {{ item.object.gunit }}</span>
+						<a href="javascript:add_cart({{ item.object.id }});" class="add_goods" title="加入购物车"></a>
+					</div>
+				</li>
+                {% endfor %}
+
+			</ul>
+
+			<div class="pagenation">
+                {% if page.has_previous %}
+{#                <a href="/list{{ type.id }}_1_{{ select_type }}/">首页</a>#}
+                    <a href="/search/?q={{ query }}&page=1">首页</a>
+                <a href="/search/?q={{ query }}&page={{ page.number|add:'-1' }}"><上一页</a>
+                {% endif %}
+
+
+                {% load filters %}
+                {% for p in page|page_list %}
+				<a href="/search/?q={{ query }}&page={{ p }}" {% if p == page.number %} class="active" {% endif %} >{{ p }}</a>
+
+                {% endfor %}
+
+
+                {% if page.has_next %}
+                    <a href="/search/?q={{ query }}&page={{ page.number|add:'1' }}">下一页></a>
+                    <a href="/search/?q={{ query }}&page={{ page.paginator.num_pages }}">末页</a>
+
+                {% endif %}
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+

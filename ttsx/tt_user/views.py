@@ -15,8 +15,11 @@ from tt_goods.models import *
 
 import time
 from user_decorators import *
+from django.core.paginator import *
 from datetime import date, datetime
 import httplib
+
+from tt_order.models import *
 
 # def send(request):
 #     # msg = '''
@@ -132,7 +135,7 @@ def user_login(request):
     if request.COOKIES.has_key('name'):
         context['name'] = request.COOKIES["name"]
     context['title'] = '登陆'
-    return render(request, 'tt_user/login.html', locals())
+    return render(request, 'tt_user/login.html', context)
 
 
 def logout(request):
@@ -155,6 +158,7 @@ def user_info(request):
 
 
     dict = request.POST
+    print dict.get('pwd')
 
     info = UserInfo()
 
@@ -237,7 +241,7 @@ def center_info(request):
     goods_ids =  request.COOKIES.get('goods_ids', '')
 
     temp = goods_ids.split(',')
-    print temp
+
 
     recent_list = []
 
@@ -253,7 +257,16 @@ def center_info(request):
 
 @user
 def center_order(request):
-    context = {'title': '用户订单'}
+
+
+    name = request.session.get('name')
+    user = UserInfo.objects.get(uname=name)
+    order_list = OrderInfo.objects.filter(user=user).order_by('-oid')
+
+    paginator = Paginator(order_list,2)
+    page = paginator.page(1)
+
+    context = {'title': '用户订单', 'page':page}
 
     return render(request, 'tt_user/user_center_order.html', context)
 
@@ -261,25 +274,47 @@ def center_order(request):
 @user
 def center_site(request):
     context = {'title': '用户地址'}
+
+
+
+    name = request.session.get('name')
+    userinfo = UserInfo.objects.get(uname=name)
+
+    try:
+        useradd = UserAddr.objects.filter(uname=userinfo)
+        print useradd
+
+        context['useradd'] = useradd[0]
+
+    except:
+        print 'except'
+        pass
+
     return render(request, 'tt_user/user_center_site.html', context)
 
 
 @user
 def center_site_info(request):
+    name = request.session.get('name')
+    useraddr_list = UserAddr.objects.filter(uname__uname=name)
+    if len(useraddr_list):
+        useraddr = useraddr_list[0]
+    else:
+        useraddr = UserAddr()
     dict = request.POST
     reciever = dict['reciever']
     addr = dict['addr']
     phone = dict['phone']
 
-    useraddr = UserAddr()
+
 
     useraddr.addr = addr
     useraddr.reciever = reciever
     useraddr.phone = phone
-    useraddr.uname = UserInfo.objects.filter(uname= request.session['name'])[0]
+    useraddr.uname = UserInfo.objects.filter(uname=request.session['name'])[0]
     useraddr.save()
 
-    context = {'reciever': reciever, 'addr':addr, 'phone':phone}
+    context = {'useradd':useraddr}
     return render(request,'tt_user/user_center_site.html', context)
 
 

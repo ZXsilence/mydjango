@@ -9,6 +9,8 @@ class UrlMiddleware:
             '/cart/count/',
             '/cart/chcount/',
             '/cart/delcart/',
+            '/user/user_info/',
+            '/user/check_username/',
 
 
             # url(r'^phone/$', phone),

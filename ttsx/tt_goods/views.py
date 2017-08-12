@@ -34,7 +34,7 @@ def list_goods(request, id, page_index, select_type):
         goods_list = type.goodsinfo_set.order_by('-gclick')
     # print type.ttitle
     # goods_list = type.goodsinfo_set.order_by('-id')
-    print goods_list
+
     paginator = Paginator(goods_list, 10 )
 
     page = paginator.page(page_index)
