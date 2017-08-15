@@ -25,9 +25,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '+8h#18c=ygbs*rs0unbjy+8hp$dc)_jj1x0srownz8it2cy@ka'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*',]
 
 
 # Application definition
@@ -120,16 +120,19 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+STATIC_ROOT = '/var/www/ttsx/static/'
+MEDIA_ROOT = STATIC_ROOT
 
 
 # send email
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.qq.com'
-EMAIL_PORT = 25
+EMAIL_PORT = 465
 EMAIL_HOST_USER = '451694791@qq.com'
-EMAIL_USE_TLS = True
-EMAIL_HOST_PASSWORD = 'dnizrbagewiobhfe'
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_HOST_PASSWORD = 'wzkfvcvfdwqybggj'
 # EMAIL_FROM = 'ttsx<451694791@qq.com>'
 EMAIL_FROM = '天天生鲜服务团<451694791@qq.com>'
 

@@ -3,10 +3,13 @@
 from celery import task
 from django.core.mail import send_mail
 from django.conf import settings
+from celery import Celery, platforms
+
+platforms.C_FORCE_ROOT = True  #加上这一行
 
 @task
 def send(email):
-
+    print 'sending...'
     msg = '''
     <h1> hello world </h1>
 

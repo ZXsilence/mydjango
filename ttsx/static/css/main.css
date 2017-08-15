@@ -167,7 +167,8 @@ html,body{height:100%}
 
 .main_wrap{width:1200px;margin:0 auto;}
 .l_wrap{width:200px;}
-.r_wrap{width:1200px;}
+.r_wrap{width:1000px;}
+#search{width:1200px;}
 
 
 /* 新品推荐样式 */
